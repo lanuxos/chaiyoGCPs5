@@ -615,6 +615,13 @@ gsutil cp gs://spls/gsp927/documentai-pipeline-demo/sample-files/* gs://${PROJEC
 ## Automate Data Capture at Scale with Document AI: Challenge Lab [GSP367]
 ### Task 1. Enable the Cloud Document AI API and copy lab source files
 - enable cloud document ai api
+```shell
+gcloud auth list
+
+export PROJECT_ID=$(gcloud config get-value core/project)
+
+gcloud services enable documentai.googleapis.com --project $DEVSHELL_PROJECT_ID
+```
 - copy lab source files
 ```
 mkdir ./document-ai-challenge
@@ -668,27 +675,27 @@ PROJECT_NUMBER=$(gcloud projects list --filter="project_id:$PROJECT_ID" --format
 SERVICE_ACCOUNT=$(gcloud storage service-agent --project=$PROJECT_ID)
 
 gcloud projects add-iam-policy-binding $PROJECT_ID \
---member serviceAccount:$SERVICE_ACCOUNT \
---role roles/pubsub.publisher
+  --member serviceAccount:$SERVICE_ACCOUNT \
+  --role roles/pubsub.publisher
 
-export CLOUD_FUNCTION_LOCATION="us-west1"
-gcloud functions deploy process-invoices \
---gen2 \
---region=${CLOUD_FUNCTION_LOCATION} \
---entry-point=process_invoice \
---runtime=python39 \
---service-account=${PROJECT_ID}@appspot.gserviceaccount.com \
---source=cloud-functions/process-invoices \
---timeout=400 \
---env-vars-file=cloud-functions/process-invoices/.env.yaml \
---trigger-resource=gs://${PROJECT_ID}-input-invoices \
---trigger-event=google.storage.object.finalize\
---service-account $PROJECT_NUMBER-compute@developer.gserviceaccount.com \
---allow-unauthenticated
+  export CLOUD_FUNCTION_LOCATION="REGION"
+  gcloud functions deploy process-invoices \
+  --gen2 \
+  --region=${CLOUD_FUNCTION_LOCATION} \
+  --entry-point=process_invoice \
+  --runtime=python39 \
+  --service-account=${PROJECT_ID}@appspot.gserviceaccount.com \
+  --source=cloud-functions/process-invoices \
+  --timeout=400 \
+  --env-vars-file=cloud-functions/process-invoices/.env.yaml \
+  --trigger-resource=gs://${PROJECT_ID}-input-invoices \
+  --trigger-event=google.storage.object.finalize\
+  --service-account $PROJECT_NUMBER-compute@developer.gserviceaccount.com \
+  --allow-unauthenticated
 ```
 - Edit environment variables for the process-invoices Cloud Run function
   - search: Cloud Run functions
-  - Go to Cloud Run functions 1st gen
+  - if necessary[Go to Cloud Run functions 1st gen]
   - process-invoices
   - Edit
   - Variables & Secret
