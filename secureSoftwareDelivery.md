@@ -987,7 +987,7 @@ gcloud projects add-iam-policy-binding ${PROJECT_ID} \
 ```
 - open and complete sample-app/cloudbuild.yaml
 ```shell
-cat > cloudbuild.yaml <<EOF
+cat <<EOF > cloudbuild.yaml 
 steps:
 
 # TODO: #1. Build Step. Replace the <image-name> placeholder with the correct value.
